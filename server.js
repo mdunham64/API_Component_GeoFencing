@@ -101,7 +101,6 @@ router.route('/movies')
         aMovie.yearReleased = req.body.yearReleased;
         aMovie.genre = req.body.genre;
         aMovie.actors = req.body.actors;
-        aMovie.imageURL = req.body.imageURL;
 
         // save the movie
         if (Movie.findOne({title: aMovie.title}) != null) {
