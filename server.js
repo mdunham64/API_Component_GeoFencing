@@ -98,7 +98,7 @@ router.route('/movies')
         console.log(req.body);
         var aMovie = new Movie();
         aMovie.title = req.body.title;
-        aMovie.yearReleased = req.body.yearReleased;
+        aMovie.year = req.body.yearReleased;
         aMovie.genre = req.body.genre;
         aMovie.actors = req.body.actors;
 
