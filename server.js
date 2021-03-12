@@ -88,14 +88,14 @@ router.post('/signin', function (req, res) {
 router.route('/movies')
     //GET
     //I made this just like Shawn's get for users
-    .get(authJwtController.isAuthenticated, function(req, res) {
+    /*.get(authJwtController.isAuthenticated, function(req, res) {
         Movie.find(function (err, movies) {
                 if (err) res.send(err);
                 // return the movies
                 res.json(movies);
             });
     }
-    )
+    )*/
 
 //POST
     .post(authJwtController.isAuthenticated ,function(req, res) {
