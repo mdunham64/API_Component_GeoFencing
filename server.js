@@ -1,9 +1,3 @@
-/*
-CSC3916 HW3
-File: Server.js
-Description: Web API scaffolding for Movie API
- */
-
 var express = require('express');
 var bodyParser = require('body-parser');
 var passport = require('passport');
@@ -41,6 +35,18 @@ function getJSONObjectForMovieRequirement(req) {
     return json;
 }
 
+router.route('/postjwt')
+    .post(authJwtController.isAuthenticated, function (req, res) {
+            console.log(req.body);
+            res = res.status(200);
+            if (req.get('Content-Type')) {
+                console.log("Content-Type: " + req.get('Content-Type'));
+                res = res.type(req.get('Content-Type'));
+            }
+            res.send(req.body);
+        }
+    );
+
 router.post('/signup', function(req, res) {
     if (!req.body.username || !req.body.password) {
         res.json({success: false, msg: 'Please include both username and password to signup.'})
@@ -57,6 +63,7 @@ router.post('/signup', function(req, res) {
                 else
                     return res.json(err);
             }
+
             res.json({success: true, msg: 'Successfully created new user.'})
         });
     }
@@ -86,60 +93,57 @@ router.post('/signin', function (req, res) {
 });
 
 router.route('/movies')
-    //GET
-    //I made this just like Shawn's get for users
-    .get(authJwtController.isAuthenticated, function(req, res) {
-        Movie.find(function (err, movies) {
-                if (err) res.send(err);
-                // return the movies
-                res.json(movies);
-            });
-    }
-    )
-
-//POST
-    .post(authJwtController.isAuthenticated ,function(req, res) {
+    //POST
+    .post(authJwtController.isAuthenticated, function (req, res) {
+        console.log(req.body);
         var aMovie = new Movie();
         aMovie.title = req.body.title;
-        aMovie.year = req.body.year;
+        aMovie.yearReleased = req.body.yearReleased;
         aMovie.genre = req.body.genre;
         aMovie.actors = req.body.actors;
+        aMovie.imageURL = req.body.imageURL;
 
-        if(Movie.findOne({title: aMovie.title}) != null) {
-            //these next lines are very similar to the signup method from Shawn's code, 52-60
-            aMovie.save(function(err){
+        // save the movie
+        if (Movie.findOne({title: aMovie.title}) != null) {
+            aMovie.save(function (err) {
                 if (err) {
+                    // duplicate entry
                     if (err.code == 11000)
-                        return res.json({ success: false, message: 'A movie with that username already exists.'});
+                        res.json({success: false, message: 'The movie already exists in the db. '});
                     else
-                        return res.json(err);
-                }
-                res.json({success: true, msg: 'Successfully created new movie.'})
+                        return res.send(err);
+                }else res.json({success: true, message: 'Movie Added Successfully'});
             });
-        }})
-
-//DELETE
-    .delete(authJwtController.isAuthenticated, function (req, res){
-        Movie.deleteOne({title:req.body.title}, function (err, obj){
+        };
+    })
+    //DELETE
+    .delete(authJwtController.isAuthenticated, function (req, res) {
+        Movie.deleteOne({title: req.body.title}, function(err, obj) {
             if (err) res.send(err);
-            else res.json({success: true, message: 'Deleted Movie Object from the DB'});
+            else res.json({success: true, message: 'Movie REMOVED from db'});
         })
-    });
+    })
+    //PUT
+    .put(authJwtController.isAuthenticated, function (req, res) {
+        var queryTitle = req.query.title;
+        if (Movie.findOne({title: queryTitle}) != null) {
+            var newVals = { $set: req.body };
+            Movie.updateOne({title: queryTitle}, newVals, function(err, obj) {
+                if (err) res.send(err);
+                else res.json({success: true, message: 'Updated'});
+            })
+        };
+    })
 
-//PUT(MODIFY)
-router.put(authJwtController.isAuthenticated, function (req, res) {
-    var queryMovie = req.query.title;
-    if(Movie.findOne({title: queryMovie.title}) != null){
-        var updateValue = {$set: req.body};
-        Movie.updateOne({title: queryMovie}, updateValue, function (err, obj){
-            if (err) res.send(err);
-            else res.json({success: true, message: 'Updated the Movie Successfully'});
-        })
-    }
-});
+    //GET
+    .get(authJwtController.isAuthenticated, function (req, res) {
+    Movie.find(function (err, movie) {
+        if(err) res.send(err);
+        res.json(movie);
+    })
+})
+
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
 module.exports = app; // for testing only
-
-

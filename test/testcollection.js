@@ -1,4 +1,3 @@
-/*
 let envPath = __dirname + "/../.env"
 require('dotenv').config({path:envPath});
 let chai = require('chai');
@@ -10,7 +9,7 @@ chai.should();
 chai.use(chaiHttp);
 
 let login_details = {
-    name: 'test1',
+    name: 'test',
     username: 'email@email.com',
     password: '123@abc'
 }
@@ -55,4 +54,4 @@ describe('Register, Login and Call Test Collection with Basic Auth and JWT Auth'
         })
     });
 
-});*/
+});
