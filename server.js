@@ -1,7 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var passport = require('passport');
-var authController = require('./auth');
+//var authController = require('./auth');
 var authJwtController = require('./auth_jwt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
@@ -98,7 +98,7 @@ router.route('/movies')
         console.log(req.body);
         var aMovie = new Movie();
         aMovie.title = req.body.title;
-        aMovie.year = req.body.yearReleased;
+        aMovie.year = req.body.year;
         aMovie.genre = req.body.genre;
         aMovie.actors = req.body.actors;
 
@@ -113,7 +113,7 @@ router.route('/movies')
                         return res.send(err);
                 }else res.json({success: true, message: 'Movie Added Successfully'});
             });
-        };
+        }
     })
     //DELETE
     .delete(authJwtController.isAuthenticated, function (req, res) {
@@ -131,7 +131,7 @@ router.route('/movies')
                 if (err) res.send(err);
                 else res.json({success: true, message: 'Updated'});
             })
-        };
+        }
     })
 
     //GET
