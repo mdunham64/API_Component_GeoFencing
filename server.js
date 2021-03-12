@@ -11,7 +11,7 @@ var authController = require('./auth');
 var authJwtController = require('./auth_jwt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
-var Movie = require('./movies');
+var Movie = require('./Movies');
 var User = require('./Users');
 
 var app = express();
@@ -88,7 +88,7 @@ router.post('/signin', function (req, res) {
 router.route('/movies')
     //GET
     //I made this just like Shawn's get for users
-    .get(authController.isAuthenticated, function(req, res) {
+    .get(authJwtController.isAuthenticated, function(req, res) {
         Movie.find(function (err, movies) {
                 if (err) res.send(err);
                 // return the movies
