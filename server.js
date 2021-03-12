@@ -84,6 +84,59 @@ router.post('/signin', function (req, res) {
     })
 });
 
+router.route('/movies')
+    //GET
+    //I made this just like Shawn's get for users
+    .get(authController.isAuthenticated, function(req, res) {
+        Movie.find(function (err, movies) {
+                if (err) res.send(err);
+                // return the movies
+                res.json(movies);
+            });
+    }
+    )
+
+//POST
+    .post(authJwtController.isAuthenticated ,function(req, res) {
+        var aMovie = new Movie();
+        aMovie.title = req.body.title;
+        aMovie.year = req.body.year;
+        aMovie.genre = req.body.genre;
+        aMovie.actors = req.body.actors;
+
+        if(Movie.findOne({title: aMovie.title}) != null) {
+            //these next lines are very similar to the signup method from Shawn's code, 52-60
+            aMovie.save(function(err){
+                if (err) {
+                    if (err.code == 11000)
+                        return res.json({ success: false, message: 'A movie with that username already exists.'});
+                    else
+                        return res.json(err);
+                }
+                res.json({success: true, msg: 'Successfully created new movie.'})
+            });
+        }})
+
+//DELETE
+    .delete(authJwtController.isAuthenticated, function (req, res){
+        Movie.deleteOne({title:req.body.title}, function (err, obj){
+            if (err) res.send(err);
+            else res.json({success: true, message: 'Deleted Movie Object from the DB'});
+        })
+    });
+
+//PUT(MODIFY)
+router.put(authJwtController.isAuthenticated, function (req, res) {
+    var queryMovie = req.query.title;
+    if(Movie.findOne({title: queryMovie.title}) != null){
+        var updateValue = {$set: req.body};
+        Movie.updateOne({title: queryMovie}, updateValue, function (err, obj){
+            if (err) res.send(err);
+            else res.json({success: true, message: 'Updated the Movie Successfully'});
+        })
+    }
+});
+
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
 module.exports = app; // for testing only
