@@ -8,7 +8,6 @@ var cors = require('cors');
 var Movie = require('./Movies');
 var Review = require('./review');
 var User = require('./Users');
-const movies = require("mocha/mocha");
 var theUser; //this is used to store the user object. Then we can use it again later to assign attributes where we need.
 
 var app = express();
@@ -173,7 +172,7 @@ router.route('/review')
 
     //GET - this needs to be fixed. Right now this just returns all of the reviews.
     //currently needs authentication but thats not a req
-    /*.get(function (req, res) {
+    .get(function (req, res) {
         if(req.query.reviews === 'true'){
         Movie.aggregate([
             {
@@ -188,7 +187,7 @@ router.route('/review')
             if(err) res.send(err);
             res.json(movie);
         });}}
-    )*/
+    )
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
