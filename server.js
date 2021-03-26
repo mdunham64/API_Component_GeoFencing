@@ -178,8 +178,8 @@ router.route('/review')
             {
                 $lookup:{
                     from: 'reviews',
-                    localField:'title',
-                    foreignField:'movieTitle',
+                    localField:'movieTitle',
+                    foreignField:'title',
                     as: 'movieWithReview'
                 }
             }
