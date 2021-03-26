@@ -177,9 +177,9 @@ router.route('/review')
         Movie.aggregate([
             {
                 $lookup:{
-                    from: 'movies',
+                    from: 'reviews',
                     localField:'title',
-                    foreeignField:'movieTitle',
+                    foreignField:'movieTitle',
                     as: 'movieWithReview'
                 }
             }
