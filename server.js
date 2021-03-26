@@ -151,7 +151,7 @@ router.route('/review')
     .post(authJwtController.isAuthenticated, function (req, res) {
         console.log(req.body);
         var aReview = new Review();
-        aReview.criticName = theUser.username;
+        aReview.criticName = theUser.username; //this sets the critic name to the username that is logged in.
         aReview.quote = req.body.quote;
         aReview.rating = req.body.rating;
         aReview.movieTitle = req.body.movieTitle;
@@ -171,10 +171,15 @@ router.route('/review')
     })
 
     //GET - this needs to be fixed. Right now this just returns all of the reviews.
-    .get(authJwtController.isAuthenticated, function (req, res) {
-        Review.find(function (err, review) {
+    //currently needs authentication but thats not a req
+    .get(function (req, res) {
+        //we want to return the movies but when the movie title matches a review's movieTitle, we want to
+        //aggregate them to one object.
+        Movie.find(function (err, movie) {
             if(err) res.send(err);
-            res.json(review);
+            //at this point I have all of the movies.
+            db.movies.find({"reviews.movieTitle": movies.title})
+            res.json(movie);
         })
     })
 
