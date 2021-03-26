@@ -175,12 +175,12 @@ router.route('/review')
     .get(function (req, res) {
         //we want to return the movies but when the movie title matches a review's movieTitle, we want to
         //aggregate them to one object.
-        Movie.find(function (err, movie) {
+        /*Movie.find(function (err, movie) {
             if(err) res.send(err);
             //at this point I have all of the movies.
             db.movies.find({"reviews.movieTitle": movies.title})
             res.json(movie);
-        })
+        })*/
     })
 
 
