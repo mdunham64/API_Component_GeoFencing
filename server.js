@@ -181,6 +181,11 @@ router.route('/review')
                     foreignField:'movieTitle',
                     as: 'movieWithReview'
                 }},
+            {
+                $match:{
+                    "title":req.body.movieTitle,
+                }
+            }
         ]).exec(function (err, movie){
             if(err) res.send(err);
             res.json(movie);
