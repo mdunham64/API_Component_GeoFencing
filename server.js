@@ -174,18 +174,20 @@ router.route('/review')
     //GET - this needs to be fixed. Right now this just returns all of the reviews.
     //currently needs authentication but thats not a req
     .get(function (req, res) {
-        var movieWithReview;
+        //var movieWithReview;
         Movie.aggregate([
             {
                 $lookup:{
                     from: 'movies',
                     localField:'title',
                     foreeignField:'movieTitle',
-                    as: movieWithReview
+                    as: 'movieWithReview'
                 }
             }
-        ])
-        res.json(movieWithReview);
+        ]).exec(function (err, movie){
+            if(err) res.send(err);
+            res.json(movie);
+        });
     })
 
 
