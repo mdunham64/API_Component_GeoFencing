@@ -178,11 +178,13 @@ router.route('/review')
             {
                 $lookup:{
                     from: 'reviews',
-                    localField:'movieTitle',
-                    foreignField:'title',
+                    localField:'title',
+                    foreignField:'movieTitle',
                     as: 'movieWithReview'
-                }
-            }
+                }},
+            {
+                $match:{"title":req.body.title}
+            },
         ]).exec(function (err, movie){
             if(err) res.send(err);
             res.json(movie);
