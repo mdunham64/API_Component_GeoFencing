@@ -156,19 +156,20 @@ router.route('/review')
         aReview.rating = req.body.rating;
         aReview.movieTitle = req.body.movieTitle;
 
-        // save the review
-        if (Review.findOne({quote: aReview.quote}) != null) {
-            aReview.save(function (err) {
-                if (err) {
-                    // duplicate entry - pretty sure this just wont allow the same quote to be added.
-                    if (err.code == 11000)
-                        res.json({success: false, message: 'The review for this movie already exists'});
-                    else
-                        return res.send(err);
-                }else res.json({success: true, message: 'Review Added Successfully'});
-            });
-        }
-    })
+        Movie.findOne({title: req.body.movieTitle}).exec(function(err, movie){
+            if(err){
+                return res.json(err);
+            }
+            if(movie === null){
+                return res.json({Success: false, Message: 'No movie exists by that name.'});
+            }else{
+                aReview.save(function(err, review){
+                    if(err){
+                        return res.json(err);
+                    }else res.json({success: true, message: 'Review Added Successfully'});
+                })
+            }
+        })})
 
     //GET - this needs to be fixed. Right now this just returns all of the reviews.
     //currently needs authentication but thats not a req
