@@ -169,43 +169,43 @@ router.route('/review')
                     }else res.json({success: true, message: 'Review Added Successfully'});
                 })
             }
-        })})
-
+        })
+    })
     //GET - this needs to be fixed. Right now this just returns all of the reviews.
     //currently needs authentication but thats not a req
     .get(function (req, res) {
-        if (req.query.reviews === true) {
-            //use same code as from the post above, 159-165:
-            Movie.findOne({title: req.body.movieTitle}).exec(function (err, movie) {
-                if (err) {
-                    return res.json(err);
+        if(req.query.reviews === true){
+            Movie.findOne({title: req.body.movieTitle}).exec(function(err, movie){
+                if(err){
+                    return res.send(err);
                 }
-                if (!movie) {
-                    return res.json({Success: false, Message: 'No movie exists by that name.'});
-                } else {
-                    Movie.aggregate([
-                        {
-                            $match: {
-                                "title": req.body.movieTitle,
-                            }
-                        },
-                        {
-                            $lookup: {
-                                from: 'reviews',
-                                localField: 'title',
-                                foreignField: 'movieTitle',
-                                as: 'movieWithReview'
-                            }
+                if(movie === null){
+                    return res.json({Success: false, Message: 'Movie Not in Database'});
+                }
+                Movie.aggregate([
+                    {
+                        $match:{
+                            "title":req.body.movieTitle,
                         }
-                    ]).exec(function (err, movie) {
-                        if (err) res.send(err);
-                        res.json(movie);
-                    })
-                }
+                    },
+                    {
+                        $lookup:{
+                            from:'reviews',
+                            localField:'title',
+                            foreignField:'movieTitle',
+                            as: 'movieWithReview'
+                        }
+                    }
+                ]).exec(function (err, movie){
+                    if(err){
+                       return res.send(err);
+                    }else{
+                        return res.json(movie);
+                    }
+                })
             })
         }
-
-    });
+    })
 
 
 app.use('/', router);
