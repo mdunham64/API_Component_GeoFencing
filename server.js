@@ -186,17 +186,17 @@ router.route('/review')
             })}
         Movie.aggregate([
             {
+                $match:{
+                    "movieTitle":req.body.title,
+                }
+            },
+            {
                 $lookup:{
                     from: 'reviews',
                     localField:'title',
                     foreignField:'movieTitle',
                     as: 'movieWithReview'
-                }},
-            {
-                $match:{
-                    "movieTitle":req.body.title,
-                }
-            }
+                }}
         ]).exec(function (err, movie){
             if(err) res.send(err);
             res.json(movie);
