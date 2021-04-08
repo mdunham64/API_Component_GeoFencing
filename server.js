@@ -205,7 +205,35 @@ router.route('/review')
                 })
             })
         }else{
-            return res.json({Success: false, Message: 'Didnt make it into params'});
+            Movie.findOne({title: req.body.movieTitle}).exec(function(err, movie){
+                if(err){
+                    return res.send(err);
+                }
+                if(movie === null){
+                    return res.json({Success: false, Message: 'Movie Not in Database'});
+                }
+                Movie.aggregate([
+                    {
+                        $match:{
+                            "title":req.body.movieTitle,
+                        }
+                    },
+                    {
+                        $lookup:{
+                            from:'reviews',
+                            localField:'title',
+                            foreignField:'movieTitle',
+                            as: 'movieWithReview'
+                        }
+                    }
+                ]).exec(function (err, movie){
+                    if(err){
+                        return res.send(err);
+                    }else{
+                        return res.json(movie);
+                    }
+                })
+            })
         }
     })
 
