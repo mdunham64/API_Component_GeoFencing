@@ -199,7 +199,7 @@ router.route('/review')
         ]).exec(function (err, movie){
             if(err) res.send(err);
             res.json(movie);
-        })})}}
+        })})}})
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
