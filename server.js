@@ -182,7 +182,8 @@ router.route('/review')
                 }
                 if(movie === null){
                     return res.json({Success: false, Message: 'No movie exists by that name.'});
-                }else
+                }
+            })}else
         Movie.aggregate([
             {
                 $match:{
@@ -196,11 +197,12 @@ router.route('/review')
                     foreignField:'movieTitle',
                     as: 'movieWithReview'
                 }}
-        ]).exec(function (err, movie) {
-            if (err) res.send(err);
+        ]).exec(function (err, movie){
+            if(err) res.send(err);
             res.json(movie);
-        })})}}
+        });}
     )
+
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
 module.exports = app; // for testing only
