@@ -176,14 +176,14 @@ router.route('/review')
     .get(function (req, res) {
         if(req.query.reviews === true){
             //use same code as from the post above, 159-165:
-            Movie.findOne({title: req.body.movieTitle}).exec(function(err, movie){
+            Movie.findOne({title: req.body.title}).exec(function(err, movie){
                 if(err){
                     return res.json(err);
                 }
                 if(movie === null){
                     return res.json({Success: false, Message: 'No movie exists by that name.'});
                 }
-            })}
+            })}else
         Movie.aggregate([
             {
                 $match:{
