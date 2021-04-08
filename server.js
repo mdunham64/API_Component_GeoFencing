@@ -187,7 +187,7 @@ router.route('/review')
         Movie.aggregate([
             {
                 $match:{
-                    "movieTitle":req.body.movieTitle,
+                    "title":req.body.movieTitle,
                 }
             },
             {
