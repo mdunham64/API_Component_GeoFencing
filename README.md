@@ -10,4 +10,4 @@ And here is my HW5 repo: https://github.com/haggardphunk/CSC3916_HW5_BUSH
 <br>
 I hope that link was what you were looking for in terms of what you need regarding your announcement. 
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/f57c72a90d92faeac70b#?env%5BHomework%201%5D=W3sia2V5IjoidmFyaWFibGVfa2V5IiwidmFsdWUiOiJ2YXJpYWJsZV92YWx1ZSIsImVuYWJsZWQiOnRydWV9LHsia2V5IjoiJGVjaG9fYm9keSIsInZhbHVlIjoiaGVsbG8gd29ybGQxIiwiZW5hYmxlZCI6dHJ1ZX0seyJrZXkiOiJib29rX3RpdGxlIiwidmFsdWUiOiJUdXJpbmciLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImlkIiwidmFsdWUiOiJRblVQQkFBQVFCQUoiLCJlbmFibGVkIjp0cnVlfV0=)
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/f57c72a90d92faeac70b)
