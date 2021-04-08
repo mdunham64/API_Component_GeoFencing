@@ -183,7 +183,7 @@ router.route('/review')
                 if(movie === null){
                     return res.json({Success: false, Message: 'No movie exists by that name.'});
                 }
-            })}else
+            });}else
         Movie.aggregate([
             {
                 $match:{
