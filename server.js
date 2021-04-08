@@ -174,7 +174,7 @@ router.route('/review')
     //GET - this needs to be fixed. Right now this just returns all of the reviews.
     //currently needs authentication but thats not a req
     .get(function (req, res) {
-        if(req.body.reviews === true){
+        if(req.query.reviews === true){
             Movie.findOne({title: req.body.movieTitle}).exec(function(err, movie){
                 if(err){
                     return res.send(err);
@@ -205,7 +205,7 @@ router.route('/review')
                 })
             })
         }else{
-            return res.json({Success: false, Message: 'Spun Out'});
+            return res.json({Success: false, Message: 'Didnt make it into params'});
         }
     })
 
