@@ -184,12 +184,12 @@ router.route('/movies')
             }
     })
 
-router.route('/movies/:movieTitle')
+router.route('/movies/:title')
     .get(function (req, res){
         if(req.query.reviews === 'true'){
             Movie.aggregate([
                 {
-                    $match:{"title":req.params.movieTitle}
+                    $match:{"title":req.params.title}
                 },
                 {
                     $lookup:{
