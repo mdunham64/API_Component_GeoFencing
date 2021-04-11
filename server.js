@@ -141,13 +141,6 @@ router.route('/movies')
     //GET
     .get(function (req, res) {
         if(req.query.reviews === 'true'){
-            Movie.findOne({title: req.body.movieTitle}).exec(function(err, movie){
-                if(err){
-                    return res.send(err);
-                }
-                if(movie === null){
-                    return res.json({Success: false, Message: 'Movie Not in Database'});
-                }
                 Movie.aggregate([
                     {
                         $lookup:{
@@ -157,7 +150,13 @@ router.route('/movies')
                             as: 'movieWithReview'
                         }
                     },
-                    {$addFields : { avgRating: { $avg: "$reviews.rating" } }}
+                    {
+                        $addFields:{
+                            avgRating: {
+                                $avg: "$reviews.rating"
+                            }
+                        }
+                    }
                 ]).exec(function (err, movie){
                     if(err){
                         return res.send(err);
@@ -165,15 +164,7 @@ router.route('/movies')
                         return res.json(movie);
                     }
                 })
-            })
         }else{
-            Movie.findOne({title: req.body.movieTitle}).exec(function(err, movie){
-                if(err){
-                    return res.send(err);
-                }
-                if(movie === null){
-                    return res.json({Success: false, Message: 'Movie Not in Database'});
-                }
                 Movie.aggregate([
                     {
                         $lookup:{
@@ -190,8 +181,7 @@ router.route('/movies')
                         return res.json(movie);
                     }
                 })
-            })
-        }
+            }
     })
 
 router.route('/movies/:movieTitle')
@@ -276,13 +266,7 @@ router.route('/review')
     //currently needs authentication but thats not a req
     .get(function (req, res) {
         if(req.query.reviews === 'true'){
-            Movie.findOne({title: req.body.movieTitle}).exec(function(err, movie){
-                if(err){
-                    return res.send(err);
-                }
-                if(movie === null){
-                    return res.json({Success: false, Message: 'Movie Not in Database'});
-                }
+
                 Movie.aggregate([
                     {
                         $match:{
@@ -305,15 +289,7 @@ router.route('/review')
                         return res.json(movie);
                     }
                 })
-            })
         }else{
-            Movie.findOne({title: req.body.movieTitle}).exec(function(err, movie){
-                if(err){
-                    return res.send(err);
-                }
-                if(movie === null){
-                    return res.json({Success: false, Message: 'Movie Not in Database'});
-                }
                 Movie.aggregate([
                     {
                         $match:{
@@ -335,8 +311,7 @@ router.route('/review')
                         return res.json(movie);
                     }
                 })
-            })
-        }
+            }
     })
 
 
