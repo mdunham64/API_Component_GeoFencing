@@ -139,12 +139,112 @@ router.route('/movies')
     })
 
     //GET
-    .get(authJwtController.isAuthenticated, function (req, res) {
-    Movie.find(function (err, movie) {
-        if(err) res.send(err);
-        res.json(movie);
+    .get(function (req, res) {
+        if(req.query.reviews === 'true'){
+            Movie.findOne({title: req.body.movieTitle}).exec(function(err, movie){
+                if(err){
+                    return res.send(err);
+                }
+                if(movie === null){
+                    return res.json({Success: false, Message: 'Movie Not in Database'});
+                }
+                Movie.aggregate([
+                    {
+                        $lookup:{
+                            from:'reviews',
+                            localField:'title',
+                            foreignField:'movieTitle',
+                            as: 'movieWithReview'
+                        }
+                    },
+                    {$addFields : { avgRating: { $avg: "$reviews.rating" } }}
+                ]).exec(function (err, movie){
+                    if(err){
+                        return res.send(err);
+                    }else{
+                        return res.json(movie);
+                    }
+                })
+            })
+        }else{
+            Movie.findOne({title: req.body.movieTitle}).exec(function(err, movie){
+                if(err){
+                    return res.send(err);
+                }
+                if(movie === null){
+                    return res.json({Success: false, Message: 'Movie Not in Database'});
+                }
+                Movie.aggregate([
+                    {
+                        $lookup:{
+                            from:'reviews',
+                            localField:'title',
+                            foreignField:'movieTitle',
+                            as: 'reviews'
+                        }
+                    }
+                ]).exec(function (err, movie){
+                    if(err){
+                        return res.send(err);
+                    }else{
+                        return res.json(movie);
+                    }
+                })
+            })
+        }
     })
-})
+
+router.route('/movies/:movieTitle')
+    .get(function (req, res){
+        if(req.query.reviews === 'true'){
+            Movie.aggregate([
+                {
+                    $match:{"title":req.params.movieTitle}
+                },
+                {
+                    $lookup:{
+                        from:'reviews',
+                        localField:'title',
+                        foreignField:'movieTitle',
+                        as: 'reviews'
+                    }
+                },
+                {
+                    $addfields:{
+                        avgRating:{$avg:"$reviews.rating"}
+                    }
+                }
+                ]
+            ).exec(function (err, movie){
+                if(err){
+                    return res.send(err);
+                }else{
+                    return res.json(movie);
+                }
+            })
+        }else{
+            Movie.aggregate([
+                    {
+                        $match:{"title":req.params.movieTitle}
+                    },
+                    {
+                        $lookup:{
+                            from:'reviews',
+                            localField:'title',
+                            foreignField:'movieTitle',
+                            as: 'reviews'
+                        }
+                    },
+                ]
+            ).exec(function (err, movie){
+                if(err){
+                    return res.send(err);
+                }else{
+                    return res.json(movie);
+                }
+            })
+        }
+    })
 
 //REVIEW ONLY NEEDS GET AND POST
 router.route('/review')
