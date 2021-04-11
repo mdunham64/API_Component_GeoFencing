@@ -184,7 +184,7 @@ router.route('/movies')
             }
     })
 
-router.route('/movie/:movieTitle')
+/*router.route('/movie/:movieTitle')
     .get(function (req, res){
         if(req.query.reviews === 'true'){
             Movie.aggregate([
@@ -234,7 +234,7 @@ router.route('/movie/:movieTitle')
                 }
             })
         }
-    })
+    })*/
 
 //REVIEW ONLY NEEDS GET AND POST
 router.route('/review')
