@@ -189,6 +189,7 @@ router.route('/review')
                             "title":req.body.movieTitle,
                         }
                     },
+                    {$addFields : { avgRating: { $avg: "$reviews.rating" } }},
                     {
                         $lookup:{
                             from:'reviews',
