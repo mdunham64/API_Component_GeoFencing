@@ -184,52 +184,6 @@ router.route('/movies')
             }
     })
 
-router.route('/movies/:movieTitle')
-    .get(function (req, res) {
-        if(req.query.reviews === 'true'){
-            Movie.aggregate([
-                {
-                    $lookup:{
-                        from:'reviews',
-                        localField:'title',
-                        foreignField:'movieTitle',
-                        as: 'reviews'
-                    }
-                },
-                {
-                    $addFields:{
-                        avgRating: {
-                            $avg: "$reviews.rating"
-                        }
-                    }
-                }
-            ]).exec(function (err, movie){
-                if(err){
-                    return res.send(err);
-                }else{
-                    return res.json(movie);
-                }
-            })
-        }else{
-            Movie.aggregate([
-                {
-                    $lookup:{
-                        from:'reviews',
-                        localField:'title',
-                        foreignField:'movieTitle',
-                        as: 'reviews'
-                    }
-                }
-            ]).exec(function (err, movie){
-                if(err){
-                    return res.send(err);
-                }else{
-                    return res.json(movie);
-                }
-            })
-        }
-    })
-
 //REVIEW ONLY NEEDS GET AND POST
 router.route('/review')
     //POST
