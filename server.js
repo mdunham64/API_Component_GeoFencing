@@ -224,7 +224,7 @@ router.route('/review')
                             from:'reviews',
                             localField:'title',
                             foreignField:'movieTitle',
-                            as: 'movieWithReview'
+                            as: 'reviews'
                         }
                     }
                 ]).exec(function (err, movie){
