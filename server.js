@@ -242,7 +242,7 @@ router.route('/review')
     .post(authJwtController.isAuthenticated, function (req, res) {
         console.log(req.body);
         var aReview = new Review();
-        aReview.criticName = theUser.username; //this sets the critic name to the username that is logged in.
+        aReview.username = theUser.username; //this sets the critic name to the username that is logged in.
         aReview.quote = req.body.quote;
         aReview.rating = req.body.rating;
         aReview.movieTitle = req.body.movieTitle;
