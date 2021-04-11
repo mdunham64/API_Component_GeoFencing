@@ -184,7 +184,7 @@ router.route('/movies')
             }
     })
 
-router.route('/movies/:title')
+router.route('/movie/:movieTitle')
     .get(function (req, res){
         if(req.query.reviews === 'true'){
             Movie.aggregate([
