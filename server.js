@@ -225,11 +225,6 @@ router.route('/movies/:movieTitle')
                             as: 'reviews'
                         }
                     },
-                {
-                    $addfields:{
-                        avgRating:{$avg:"$reviews.rating"}
-                    }
-                }
                 ]
             ).exec(function (err, movie){
                 if(err){
