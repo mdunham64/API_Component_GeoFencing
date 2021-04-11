@@ -184,13 +184,10 @@ router.route('/movies')
             }
     })
 
-/*router.route('/movie/:movieTitle')
-    .get(function (req, res){
+router.route('/movies/:movieTitle')
+    .get(function (req, res) {
         if(req.query.reviews === 'true'){
             Movie.aggregate([
-                {
-                    $match:{"title":req.params.title}
-                },
                 {
                     $lookup:{
                         from:'reviews',
@@ -200,12 +197,13 @@ router.route('/movies')
                     }
                 },
                 {
-                    $addfields:{
-                        avgRating:{$avg:"$reviews.rating"}
+                    $addFields:{
+                        avgRating: {
+                            $avg: "$reviews.rating"
+                        }
                     }
                 }
-                ]
-            ).exec(function (err, movie){
+            ]).exec(function (err, movie){
                 if(err){
                     return res.send(err);
                 }else{
@@ -214,19 +212,15 @@ router.route('/movies')
             })
         }else{
             Movie.aggregate([
-                    {
-                        $match:{"title":req.params.movieTitle}
-                    },
-                    {
-                        $lookup:{
-                            from:'reviews',
-                            localField:'title',
-                            foreignField:'movieTitle',
-                            as: 'reviews'
-                        }
-                    },
-                ]
-            ).exec(function (err, movie){
+                {
+                    $lookup:{
+                        from:'reviews',
+                        localField:'title',
+                        foreignField:'movieTitle',
+                        as: 'reviews'
+                    }
+                }
+            ]).exec(function (err, movie){
                 if(err){
                     return res.send(err);
                 }else{
@@ -234,7 +228,7 @@ router.route('/movies')
                 }
             })
         }
-    })*/
+    })
 
 //REVIEW ONLY NEEDS GET AND POST
 router.route('/review')
