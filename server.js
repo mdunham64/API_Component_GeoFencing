@@ -5,7 +5,7 @@ var passport = require('passport');
 var authJwtController = require('./auth_jwt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
-var Movie = require('./Movies');
+var Movie = require('./Country');
 var Review = require('./review');
 var User = require('./Users');
 var theUser; //this is used to store the user object. Then we can use it again later to assign attributes where we need.
@@ -50,13 +50,21 @@ router.route('/postjwt')
     );
 
 router.post('/signup', function(req, res) {
+    let Request = require("request");
     if (!req.body.username || !req.body.password) {
         res.json({success: false, msg: 'Please include both username and password to signup.'})
     } else {
+        Request('http://ip-api.com/json?fields=continent', function (err, response, body){
+            if(!err){
+                console.log(body)
+            }
+        });
+
         var user = new User();
         user.name = req.body.name;
         user.username = req.body.username;
         user.password = req.body.password;
+
 
         user.save(function(err){
             if (err) {

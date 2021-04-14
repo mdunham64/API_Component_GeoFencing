@@ -52,6 +52,11 @@ describe('Register, Login and Call Test Collection with Basic Auth and JWT Auth'
                         })
                 })
         })
+        /*chai.request('http://ip-api.com')
+            .get('/json?fields=continent')
+            .then(function(res){
+                console.log(res.body)
+            })*/
     });
 
 });
