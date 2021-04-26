@@ -192,6 +192,37 @@ router.route('/movies')
             }
     })
 
+
+router.route('/transactions')
+    .get( authJwtController.isAuthenticated, function (req, res) {
+        let userInfo = {};
+        User.aggregate([
+            {
+                $lookup:
+                    {
+                        from: 'transactions',
+                        localField: 'username',
+                        foreignField: 'transUsers[0]',
+                        as: 'user_sent_transactions'
+                    }
+            }
+        ]).then( entries =>
+        entries.filter(item => item.username === userToken.username).forEach(entry => userInfo.add(entry))); //create userToken with signin method to save user details
+
+        User.aggregate([
+            {
+                $lookup:
+                    {
+                        from: 'transactions',
+                        localField: 'username',
+                        foreignField: 'transUsers[1]',
+                        as: 'user_recv_transactions'
+                    }
+            }
+        ]).then( entries =>
+        entries.filter(item => item.username === userToken.username).forEach(entry => userInfo.add(entry))); //create userToken with signin method to save user details
+        res.json(userInfo);
+    })
 //REVIEW ONLY NEEDS GET AND POST
 router.route('/review')
     //POST
