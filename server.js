@@ -5,8 +5,7 @@ var passport = require('passport');
 var authJwtController = require('./auth_jwt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
-var Movie = require('./Country');
-var Review = require('./review');
+var Country = require('./Country');
 var User = require('./Users');
 var theUser; //this is used to store the user object. Then we can use it again later to assign attributes where we need.
 
@@ -103,95 +102,6 @@ router.post('/signin', function (req, res) {
     })
 });
 
-router.route('/movies')
-    //POST
-    .post(authJwtController.isAuthenticated, function (req, res) {
-        console.log(req.body);
-        var aMovie = new Movie();
-        aMovie.title = req.body.title;
-        aMovie.year = req.body.year;
-        aMovie.genre = req.body.genre;
-        aMovie.actors = req.body.actors;
-        aMovie.imageUrl = req.body.imageUrl;
-
-        // save the movie
-        if (Movie.findOne({title: aMovie.title}) != null) {
-            aMovie.save(function (err) {
-                if (err) {
-                    // duplicate entry
-                    if (err.code == 11000)
-                        res.json({success: false, message: 'The movie already exists in the db. '});
-                    else
-                        return res.send(err);
-                }else res.json({success: true, message: 'Movie Added Successfully'});
-            });
-        }
-    })
-    //DELETE
-    .delete(authJwtController.isAuthenticated, function (req, res) {
-        Movie.deleteOne({title: req.body.title}, function(err, obj) {
-            if (err) res.send(err);
-            else res.json({success: true, message: 'Movie REMOVED from db'});
-        })
-    })
-    //PUT
-    .put(authJwtController.isAuthenticated, function (req, res) {
-        var queryTitle = req.query.title;
-        if (Movie.findOne({title: queryTitle}) != null) {
-            var newVals = { $set: req.body };
-            Movie.updateOne({title: queryTitle}, newVals, function(err, obj) {
-                if (err) res.send(err);
-                else res.json({success: true, message: 'Updated'});
-            })
-        }
-    })
-
-    //GET
-    .get(function (req, res) {
-        if(req.query.reviews === 'true'){
-                Movie.aggregate([
-                    {
-                        $lookup:{
-                            from:'reviews',
-                            localField:'title',
-                            foreignField:'movieTitle',
-                            as: 'reviews'
-                        }
-                    },
-                    {
-                        $addFields:{
-                            avgRating: {
-                                $avg: "$reviews.rating"
-                            }
-                        }
-                    }
-                ]).exec(function (err, movie){
-                    if(err){
-                        return res.send(err);
-                    }else{
-                        return res.json(movie);
-                    }
-                })
-        }else{
-                Movie.aggregate([
-                    {
-                        $lookup:{
-                            from:'reviews',
-                            localField:'title',
-                            foreignField:'movieTitle',
-                            as: 'reviews'
-                        }
-                    }
-                ]).exec(function (err, movie){
-                    if(err){
-                        return res.send(err);
-                    }else{
-                        return res.json(movie);
-                    }
-                })
-            }
-    })
-
 
 router.route('/transactions')
     .get( authJwtController.isAuthenticated, function (req, res) {
@@ -222,83 +132,6 @@ router.route('/transactions')
         ]).then( entries =>
         entries.filter(item => item.username === userToken.username).forEach(entry => userInfo.add(entry))); //create userToken with signin method to save user details
         res.json(userInfo);
-    })
-//REVIEW ONLY NEEDS GET AND POST
-router.route('/review')
-    //POST
-    .post(authJwtController.isAuthenticated, function (req, res) {
-        console.log(req.body);
-        var aReview = new Review();
-        aReview.username = theUser.username; //this sets the critic name to the username that is logged in.
-        aReview.quote = req.body.quote;
-        aReview.rating = req.body.rating;
-        aReview.movieTitle = req.body.movieTitle;
-
-        Movie.findOne({title: req.body.movieTitle}).exec(function(err, movie){
-            if(err){
-                return res.json(err);
-            }
-            if(movie === null){
-                return res.json({Success: false, Message: 'No movie exists by that name.'});
-            }else{
-                aReview.save(function(err, review){
-                    if(err){
-                        return res.json(err);
-                    }else res.json({success: true, message: 'Review Added Successfully'});
-                })
-            }
-        })
-    })
-    //GET - this needs to be fixed. Right now this just returns all of the reviews.
-    //currently needs authentication but thats not a req
-    .get(function (req, res) {
-        if(req.query.reviews === 'true'){
-
-                Movie.aggregate([
-                    {
-                        $match:{
-                            "title":req.body.movieTitle,
-                        }
-                    },
-                    {
-                        $lookup:{
-                            from:'reviews',
-                            localField:'title',
-                            foreignField:'movieTitle',
-                            as: 'movieWithReview'
-                        }
-                    },
-                    {$addFields : { avgRating: { $avg: "$reviews.rating" } }}
-                ]).exec(function (err, movie){
-                    if(err){
-                       return res.send(err);
-                    }else{
-                        return res.json(movie);
-                    }
-                })
-        }else{
-                Movie.aggregate([
-                    {
-                        $match:{
-                            "title":req.body.movieTitle,
-                        }
-                    },
-                    {
-                        $lookup:{
-                            from:'reviews',
-                            localField:'title',
-                            foreignField:'movieTitle',
-                            as: 'reviews'
-                        }
-                    }
-                ]).exec(function (err, movie){
-                    if(err){
-                        return res.send(err);
-                    }else{
-                        return res.json(movie);
-                    }
-                })
-            }
     })
 
 
